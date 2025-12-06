@@ -1,10 +1,9 @@
-
 import React, { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Cube3D from './components/Cube3D';
 import SectionWrapper from './components/SectionWrapper';
 import { PERSONAL_INFO, EXPERIENCE_DATA, PROJECTS_DATA, SKILLS_DATA, SOCIAL_LINKS } from './constants';
-import { ArrowRight, Download, Github, ExternalLink, Send, MapPin, Mail, Phone, Code2, MousePointer2 } from 'lucide-react';
+import { ArrowRight, Download, Github, ExternalLink, Send, MapPin, Mail, Phone, Code2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const App: React.FC = () => {
@@ -126,23 +125,6 @@ ${message}`;
                 Resume <Download size={20} className="group-hover:text-primary transition-colors" />
               </a>
             </div>
-          </motion.div>
-
-          {/* Mouse Scroll Indicator */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
-          >
-            <div className="w-6 h-10 rounded-full border-2 border-slate-400 flex justify-center p-1">
-              <motion.div 
-                animate={{ y: [0, 12, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                className="w-1 h-2 bg-primary rounded-full"
-              />
-            </div>
-            <span className="text-xs text-slate-500 font-mono tracking-widest uppercase">Scroll</span>
           </motion.div>
       </section>
 
