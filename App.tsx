@@ -10,6 +10,15 @@ import { motion } from 'framer-motion';
 const App: React.FC = () => {
   const [typedText, setTypedText] = useState('');
   const fullText = "Backend Developer | Node.js | Laravel";
+  
+  // Form State
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Typing effect
   useEffect(() => {
@@ -21,6 +30,36 @@ const App: React.FC = () => {
     }, 100);
     return () => clearInterval(interval);
   }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate network delay for better UX before opening mail client
+    setTimeout(() => {
+      const { name, email, subject, message } = formData;
+      
+      // Construct the email body
+      const emailBody = `Name: ${name}
+Email: ${email}
+
+Message:
+${message}`;
+
+      const mailtoLink = `mailto:${PERSONAL_INFO.email}?subject=${encodeURIComponent(subject || 'Portfolio Inquiry')}&body=${encodeURIComponent(emailBody)}`;
+      
+      window.location.href = mailtoLink;
+      
+      setIsSubmitting(false);
+      // Optional: clear form
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    }, 800);
+  };
 
   return (
     <div className="bg-dark min-h-screen text-slate-300 font-sans selection:bg-primary selection:text-white">
@@ -316,29 +355,65 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <form className="bg-dark-lighter p-8 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden" onSubmit={(e) => e.preventDefault()}>
+          <form className="bg-dark-lighter p-8 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden" onSubmit={handleSubmit}>
              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[50px] translate-x-1/2 -translate-y-1/2"></div>
              
              <div className="grid grid-cols-2 gap-6 mb-6">
                <div className="col-span-2 sm:col-span-1">
                  <label className="block text-sm text-slate-400 mb-2 font-medium">Name</label>
-                 <input type="text" className="w-full bg-dark border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all" placeholder="John Doe" />
+                 <input 
+                    type="text" 
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full bg-dark border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all" 
+                    placeholder="John Doe" 
+                    required
+                 />
                </div>
                <div className="col-span-2 sm:col-span-1">
                  <label className="block text-sm text-slate-400 mb-2 font-medium">Email</label>
-                 <input type="email" className="w-full bg-dark border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all" placeholder="john@example.com" />
+                 <input 
+                    type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full bg-dark border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all" 
+                    placeholder="john@example.com" 
+                    required
+                 />
                </div>
              </div>
              <div className="mb-6">
                <label className="block text-sm text-slate-400 mb-2 font-medium">Subject</label>
-               <input type="text" className="w-full bg-dark border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all" placeholder="Project Inquiry" />
+               <input 
+                  type="text" 
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  className="w-full bg-dark border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all" 
+                  placeholder="Project Inquiry" 
+                  required
+               />
              </div>
              <div className="mb-8">
                <label className="block text-sm text-slate-400 mb-2 font-medium">Message</label>
-               <textarea rows={4} className="w-full bg-dark border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all resize-none" placeholder="Tell me about your project..."></textarea>
+               <textarea 
+                  rows={4} 
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  className="w-full bg-dark border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all resize-none" 
+                  placeholder="Tell me about your project..."
+                  required
+               ></textarea>
              </div>
-             <button className="w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02]">
-               Send Message <Send size={18} />
+             <button 
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-wait`}
+             >
+               {isSubmitting ? 'Opening Mail Client...' : 'Send Message'} <Send size={18} className={isSubmitting ? 'animate-pulse' : ''} />
              </button>
           </form>
         </div>
